@@ -1,2 +1,5 @@
 //Todo checklist for what need to be done
 todo.txt
+
+//Dot env file
+.env

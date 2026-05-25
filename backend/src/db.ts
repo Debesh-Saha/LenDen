@@ -1,6 +1,7 @@
 import mongoose, {model, Schema} from "mongoose";
-import { required } from "zod/mini";
-mongoose.connect("mongodb+srv://debesh:gFLC1wekzTXT9by2@cluster0.vudsruh.mongodb.net/lenden");
+import dotenv from "dotenv";
+dotenv.config();
+mongoose.connect(process.env.MONGO_URL!);
 
 const UserSchema= new mongoose.Schema({
     username: {type: String, unique: true, required: true},
