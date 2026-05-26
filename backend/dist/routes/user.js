@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const zod_1 = require("zod");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = require("../db");
+const config_1 = require("../config");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userRouter = express_1.default.Router();
 userRouter.post("/signup", async (req, res) => {
     const requirebody = zod_1.z.object({
@@ -15,7 +17,6 @@ userRouter.post("/signup", async (req, res) => {
         firstName: zod_1.z.string().trim().min(3, "First name must be at least 3 characters").max(20, "First name must be less than 20 characters"),
         lastName: zod_1.z.string().trim().min(3, "Last name must be at least 3 characters").max(20, "Last name must be less than 20 characters"),
     });
-    console.log(req.body);
     const parseDataWithSuccess = requirebody.safeParse(req.body);
     if (!parseDataWithSuccess.success) {
         const errorMessage = parseDataWithSuccess.error.issues.map(issue => issue.message);
@@ -44,6 +45,34 @@ userRouter.post("/signup", async (req, res) => {
     catch (e) {
         res.status(403).json({
             message: "User already exists"
+        });
+    }
+});
+userRouter.post("/signin", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const response = await db_1.UserModel.findOne({
+        username: username
+    });
+    if (!response) {
+        res.json({
+            message: "User is not present in the database"
+        });
+        return;
+    }
+    const passwordMatch = await bcrypt_1.default.compare(password, response.password);
+    if (passwordMatch) {
+        const token = jsonwebtoken_1.default.sign({
+            id: response._id
+        }, config_1.JWT_SECRET);
+        res.json({
+            message: "You are succesfully signed in!",
+            token: token
+        });
+    }
+    else {
+        res.status(403).json({
+            message: "Incorrect signin credential! Signin failed!"
         });
     }
 });
