@@ -16,3 +16,6 @@ node_modules/
 
 #text file
 todo.txt
+
+#dist
+dist
