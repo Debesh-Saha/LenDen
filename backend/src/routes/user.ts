@@ -5,6 +5,7 @@ import { UserModel } from "../db";
 import mongoose from "mongoose";
 import { JWT_SECRET } from "../config";
 import jwt from "jsonwebtoken";
+import { userMiddleware } from "../middleware";
 const userRouter = express.Router();
 
 userRouter.post("/signup", async (req, res) => {
@@ -86,6 +87,36 @@ userRouter.post("/signin", async (req, res) => {
             message: "Incorrect signin credential! Signin failed!"
         })
     }
+})
+
+userRouter.put("/", userMiddleware, async (req, res)=>{
+    const updateBody = z.object({
+        password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/, { message: "Password must contain 8-20 characters, at least one uppercase letter, one lowercase letter, one number, and one special character", }).optional(),
+
+        firstName: z.string().trim().min(3, "First name must be at least 3 characters").max(20, "First name must be less than 20 characters").optional(),
+
+        lastName: z.string().trim().min(3, "Last name must be at least 3 characters").max(20, "Last name must be less than 20 characters").optional(),
+    });
+
+    const parseDataWithSuccess= updateBody.safeParse(req.body);
+
+    if (!parseDataWithSuccess.success) {
+        const errorMessage = parseDataWithSuccess.error.issues.map(issue => issue.message);
+
+        res.status(411).json({
+            message: "Incorrect format for credential",
+            error: errorMessage,
+        });
+        return;
+    }
+
+    await UserModel.updateOne({
+        _id: req.userId
+    },req.body)
+
+    res.json({
+        message: "Your credentials are updated successfully"
+    })
 })
 
 export default userRouter;

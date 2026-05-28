@@ -9,6 +9,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = require("../db");
 const config_1 = require("../config");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const middleware_1 = require("../middleware");
 const userRouter = express_1.default.Router();
 userRouter.post("/signup", async (req, res) => {
     const requirebody = zod_1.z.object({
@@ -75,6 +76,28 @@ userRouter.post("/signin", async (req, res) => {
             message: "Incorrect signin credential! Signin failed!"
         });
     }
+});
+userRouter.put("/", middleware_1.userMiddleware, async (req, res) => {
+    const updateBody = zod_1.z.object({
+        password: zod_1.z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/, { message: "Password must contain 8-20 characters, at least one uppercase letter, one lowercase letter, one number, and one special character", }).optional(),
+        firstName: zod_1.z.string().trim().min(3, "First name must be at least 3 characters").max(20, "First name must be less than 20 characters").optional(),
+        lastName: zod_1.z.string().trim().min(3, "Last name must be at least 3 characters").max(20, "Last name must be less than 20 characters").optional(),
+    });
+    const parseDataWithSuccess = updateBody.safeParse(req.body);
+    if (!parseDataWithSuccess.success) {
+        const errorMessage = parseDataWithSuccess.error.issues.map(issue => issue.message);
+        res.status(411).json({
+            message: "Incorrect format for credential",
+            error: errorMessage,
+        });
+        return;
+    }
+    await db_1.UserModel.updateOne({
+        _id: req.userId
+    }, req.body);
+    res.json({
+        message: "Your credentials are updated successfully"
+    });
 });
 exports.default = userRouter;
 //# sourceMappingURL=user.js.map

@@ -1,5 +1,18 @@
-//Todo checklist for what need to be done
-todo.txt
+# Node modules
+node_modules/
 
-//Dot env file
+# Environment variables
 .env
+
+# Log files
+*.log
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Optional: IDE/editor configs
+.vscode/
+.DS_Store
+
+#text file
+todo.txt
