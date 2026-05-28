@@ -1,24 +1,43 @@
 import { NextFunction, Request, Response } from "express"
 import { JWT_SECRET } from "./config";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { string } from "zod";
 
 export const userMiddleware=(req: Request, res: Response, next: NextFunction)=>{
-    const header= req.headers["authorization"];
-    const decoded= jwt.verify(header as string, JWT_SECRET);
+    try {
+        const authHeader = req.headers.authorization;
 
-    if(decoded){
-        if(typeof decoded=== "string"){
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
             res.status(403).json({
-                message: "Invalid token payload"
-            })
+                message: "Authorization header missing"
+            });
             return;
         }
-        req.userId= (decoded as JwtPayload).id;
-        next()
-    }else{
+
+        const token = authHeader.split(" ")[1];
+
+        if (!token) {
+            res.status(403).json({
+                message: "Token missing"
+            });
+            return;
+        }
+
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        if (typeof decoded === "string") {
+            res.status(403).json({
+                message: "Invalid token payload"
+            });
+            return;
+        }
+
+        req.userId = decoded.id;
+
+        next();
+
+    } catch (err) {
         res.status(403).json({
-            message: "You are not logged in"
-        })
+            message: "Invalid token"
+        });
     }
 }
