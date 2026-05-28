@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { userMiddleware } from "../middleware";
 const userRouter = express.Router();
 
+//Signup Route
 userRouter.post("/signup", async (req, res) => {
     const requirebody = z.object({
         username: z.string().trim().toLowerCase().min(3, "Username must be at least 3 characters").max(20, "Username must be less than 20 characters").regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
@@ -57,6 +58,7 @@ userRouter.post("/signup", async (req, res) => {
     }
 })
 
+//Signin Route
 userRouter.post("/signin", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -89,6 +91,7 @@ userRouter.post("/signin", async (req, res) => {
     }
 })
 
+//Update User Details
 userRouter.put("/", userMiddleware, async (req, res)=>{
     const updateBody = z.object({
         password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/, { message: "Password must contain 8-20 characters, at least one uppercase letter, one lowercase letter, one number, and one special character", }).optional(),
@@ -118,5 +121,7 @@ userRouter.put("/", userMiddleware, async (req, res)=>{
         message: "Your credentials are updated successfully"
     })
 })
+
+
 
 export default userRouter;
