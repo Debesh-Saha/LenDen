@@ -122,6 +122,40 @@ userRouter.put("/", userMiddleware, async (req, res)=>{
     })
 })
 
+userRouter.get("/bulk", async (req, res)=>{
+    try{
+        const filter = typeof req.query.filter === "string" ? req.query.filter.trim() : "";
+        if(!filter){
+            return res.status(400).json({
+                message: "Filter is required"
+            });
+        }
 
+        const users= await UserModel.find({
+            $or: [
+                {
+                    firstName: {
+                        $regex: filter,
+                        $options: "i"
+                    }
+                },
+                {
+                    lastName: {
+                        $regex: filter,
+                        $options: "i"
+                    }
+                }
+            ]
+        }).select("username firstName lastName");
+
+        res.json({
+            users
+        })
+    }catch (err){
+        res.status(500).json({
+            message: "Interal server error"
+        })
+    }
+})
 
 export default userRouter;
