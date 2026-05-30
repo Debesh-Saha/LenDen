@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { UserModel } from "../db";
+import { AccountModel, UserModel } from "../db";
 import mongoose from "mongoose";
 import { JWT_SECRET } from "../config";
 import jwt from "jsonwebtoken";
@@ -41,11 +41,18 @@ userRouter.post("/signup", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 5);
 
-        await UserModel.create({
+        const user= await UserModel.create({
             username: username,
             password: hashedPassword,
             firstName: firstname,
             lastName: lastname
+        })
+
+        const userId= user._id;
+
+        await AccountModel.create({
+            userId,
+            balance: 1+Math.random()*10000
         })
 
         res.json({
