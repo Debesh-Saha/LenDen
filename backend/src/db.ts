@@ -10,4 +10,11 @@ const UserSchema= new mongoose.Schema({
     lastName: {type: String,  required: true},
 })
 
+const AccountSchema= new mongoose.Schema({
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true},
+    balance: {type: Number, required: true}
+})
+
+
 export const UserModel= model("user", UserSchema)
+export const AccountModel= model("account", AccountSchema)

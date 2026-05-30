@@ -122,6 +122,7 @@ userRouter.put("/", userMiddleware, async (req, res)=>{
     })
 })
 
+//Get User Details
 userRouter.get("/bulk", async (req, res)=>{
     try{
         const filter = typeof req.query.filter === "string" ? req.query.filter.trim() : "";
