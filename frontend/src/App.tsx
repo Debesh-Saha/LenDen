@@ -1,16 +1,12 @@
-import { BrowserRouter, Routes } from 'react-router-dom'
 import './App.css'
+import { Appbar } from './components/Appbar'
 
 function App() {
 
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-
-        </Routes>
-      </BrowserRouter>
+    <Appbar/>
     </>
   )
 }
