@@ -6,7 +6,7 @@ type BalanceProps = {
 };
 
 export const Balance = ({ value }: BalanceProps) => {
-    const [showBalance, setShowBalance] = useState(true);
+    const [showBalance, setShowBalance] = useState(false);
 
     return (
         <div className="h-20 px-5 mx-2 mt-1 rounded-lg flex items-center justify-between bg-primary border-b-3 border-text-secondary/30">
@@ -19,7 +19,7 @@ export const Balance = ({ value }: BalanceProps) => {
                 <div className="text-2xl font-bold text-white mt-1">
                     {showBalance
                         ? `₹ ${value.toLocaleString("en-IN")}`
-                        : "₹ ••••••"}
+                        : "₹ • • • • • •"}
                 </div>
 
             </div>
