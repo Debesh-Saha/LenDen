@@ -14,7 +14,7 @@ export function Button({label, onClick, variant = "primary", size = "md", fullWi
     const variantClasses = {
         primary: "bg-primary text-white hover:bg-primary-hover shadow-sm",
         accent: "bg-accent text-white hover:bg-accent-hover shadow-sm",
-        surface: "bg-surface text-text border border-border hover:bg-surface-alt",
+        surface: "bg-surface-alt text-text border border-border hover:bg-surface-alt/95",
         ghost: "bg-transparent text-text hover:bg-surface-alt",
     };
 
