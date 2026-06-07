@@ -1,14 +1,17 @@
 import './App.css'
-import { Appbar } from './components/Appbar'
-import { Balance } from './components/Balance'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Dashboard } from './pages/Dashboard';
 
 function App() {
 
 
   return (
     <>
-      <Appbar />
-      <Balance value={100000} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
