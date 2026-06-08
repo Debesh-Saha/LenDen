@@ -35,7 +35,7 @@ export const Signup = () => {
 
                         <InputBox label="Last Name" placeholder="Doe" onChange={(e) => setLastName(e.target.value)}/>
 
-                        <InputBox label="Email" placeholder="john@example.com" onChange={(e) => setUsername(e.target.value)}/>
+                        <InputBox label="Username" placeholder="john@example.com" onChange={(e) => setUsername(e.target.value)}/>
 
                         <InputBox type="password" label="Password" placeholder="••••••••" onChange={(e) => setPassword(e.target.value)}/>
                     </div>
